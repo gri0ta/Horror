@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     public float viewRange = 10;
     Rigidbody rb;
     NavMeshAgent agent;
+    public Animator animator;
 
     void Start()
     {
@@ -19,6 +20,19 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        if (target == null)
+        {
+            animator.Play("Idle");
+        }
+        else
+        {
+            animator.Play("Walk");
+        }
+
+        if (target == null) return;
+
+        agent.speed = speed;
+
         var distance = Vector3.Distance(transform.position, target.position);
 
         if (distance < viewRange)
