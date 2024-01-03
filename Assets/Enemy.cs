@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     public float speed = 1;
     public int wanderChance = 100;
     public float wanderDistance = 5;
+    public Animator animator;
 
     Rigidbody rb;
     NavMeshAgent agent;
@@ -16,6 +17,7 @@ public class Enemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+        animator.Play("Idle"); //pasiekiam kazkokia animacija
     }
 
     void Update()
@@ -23,12 +25,14 @@ public class Enemy : MonoBehaviour
         if (target == null) return;
 
         agent.speed = speed;
+        
 
         var distance = Vector3.Distance(transform.position, target.position);
 
         if (distance < viewDistance)
         {
             // SEEK
+ 
             agent.destination = target.position;
         }
         else if (Random.Range(0, wanderChance) == 1)
@@ -36,10 +40,21 @@ public class Enemy : MonoBehaviour
             var offset = Random.insideUnitSphere * wanderDistance;
             agent.destination = transform.position + offset;
         }
+        
+
+        if (agent.velocity == Vector3.zero)
+        {
+            animator.Play("Idle");
+        }
+        else
+        {
+            animator.Play("Run");
+        }
 
         if (distance < 1f)
         {
             // JUMPSCARE
+            //animator.Play("Scream");
         }
     }
 }
